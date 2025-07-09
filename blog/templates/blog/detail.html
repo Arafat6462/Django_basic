@@ -4,22 +4,40 @@
 <div class="card mb-4">
     <div class="card-body">
         <h1 class="card-title">{{ post.title }}</h1>
-        <p class="card-text">{{ post.content }}</p>
+        <p class="card-text">{{ post.content|linebreaksbr }}</p>
+        <p class="text-muted">by {{ post.author.username }} on {{ post.pub_date|date:"F d, Y" }}</p>
     </div>
 </div>
 
-<div class="card">
-    <div class="card-header">
-        <h3>Comments</h3>
-    </div>
+<hr>
+
+<!-- Comments Section -->
+<div class="card my-4">
+    <h5 class="card-header">Comments:</h5>
     <div class="card-body">
-        <ul class="list-group list-group-flush">
-            {% for comment in comments %}
-                <li class="list-group-item">{{ comment.text }}</li>
-            {% empty %}
-                <li class="list-group-item">No comments yet.</li>
-            {% endfor %}
-        </ul>
+        {% for comment in comments %}
+        <div class="media mb-4">
+            <div class="media-body">
+                <h6 class="mt-0">{{ comment.author }}</h6>
+                {{ comment.text|linebreaksbr }}
+                <small class="text-muted">{{ comment.created_date|date:"F d, Y H:i" }}</small>
+            </div>
+        </div>
+        {% empty %}
+        <p>No comments yet. Be the first to comment!</p>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Add Comment Form -->
+<div class="card my-4">
+    <h5 class="card-header">Leave a Comment:</h5>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
     </div>
 </div>
 {% endblock %}
